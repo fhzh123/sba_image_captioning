@@ -55,6 +55,7 @@ if __name__=='__main__':
     parser.add_argument('--embedding_dropout', default=0.1, type=float, help='embedding dropout ratio')
     # Training Setting
     parser.add_argument('--smoothing_loss', default='True', type=str, help='smoothing loss')
+    parser.add_argument('--caption_shuffle', action='store_true')
     parser.add_argument('--lr', default=1e-4, type=float, help='initial learning rate')
     parser.add_argument('--weight_decay', default=1e-5, type=float, help='weight decay')
     parser.add_argument('--num_epochs', default=80, type=int, help='training epochs')

@@ -8,7 +8,7 @@ import torch
 from torch.utils.data.dataset import Dataset
 
 class CustomDataset(Dataset):
-    def __init__(self, data_path, preprocessed_path, phase='train', transform=None):
+    def __init__(self, data_path, preprocessed_path, phase='train', transform=None, caption_shuffle=True):
         with open(os.path.join(preprocessed_path, f'{phase}_processed.pkl'), 'rb') as f:
             data_dict = pickle.load(f)
 
@@ -16,6 +16,7 @@ class CustomDataset(Dataset):
         self.phase = phase
         self.data_path = data_path
         self.transform = transform
+        self.caption_shuffle = caption_shuffle
         
         # Post-setting
         self.data_dict = data_dict
@@ -31,7 +32,10 @@ class CustomDataset(Dataset):
         if self.transform is not None:
             image = self.transform(image)
         # Caption Open
-        caption = random.choice(self.data_dict[int(ix)])
+        if self.caption_shuffle:
+            caption = random.choice(self.data_dict[int(ix)])
+        else:
+            caption = self.data_dict[int(ix)][0]
 
         return image, caption
     

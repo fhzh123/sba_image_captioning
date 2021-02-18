@@ -44,19 +44,21 @@ def training(args):
             transforms.RandomResizedCrop((image_size, image_size), 
                                         scale=(0.85, 1)),
             transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+            # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
         ]),
         'valid': transforms.Compose([
             transforms.Resize((image_size, image_size), interpolation=Image.BICUBIC),
             transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+            # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
         ])
     }
     dataset_dict = {
         'train': CustomDataset(args.coco_path, args.preprocessed_path, 
-                               phase='train', transform=transform_dict['train']),
+                               phase='train', transform=transform_dict['train'],
+                               caption_shuffle=args.caption_shuffle),
         'valid': CustomDataset(args.coco_path, args.preprocessed_path, 
-                               phase='valid', transform=transform_dict['valid'])
+                               phase='valid', transform=transform_dict['valid'],
+                               caption_shuffle=args.caption_shuffle)
     }
     dataloader_dict = {
         'train': DataLoader(dataset_dict['train'], collate_fn=PadCollate(), batch_size=args.batch_size, 
@@ -86,7 +88,7 @@ def training(args):
 
     start_epoch = 0
     if args.resume:
-        checkpoint_ = torch.load(args.checkpoint_path)
+        checkpoint_ = torch.load(args.save_path)
         start_epoch = checkpoint_['epoch']
         model.load_state_dict(checkpoint_['model'])
         optimizer.load_state_dict(checkpoint_['optimizer'])
