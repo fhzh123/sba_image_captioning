@@ -40,6 +40,18 @@ def create_input_files(dataset, karpathy_json_path, image_folder, captions_per_i
 
     for img in data['images']:
         captions = []
+        path = os.path.join(image_folder, img['file_name'])
+
+        try:
+            try_img = imread(path)
+            if len(try_img.shape) == 2:
+                try_img = try_img[:, :, np.newaxis]
+                try_img = np.concatenate([try_img, try_img, try_img], axis=2)
+            try_img = imresize(try_img[:, :, :3], (256, 256))
+            try_img = try_img.transpose(2, 0, 1)
+        except ValueError:
+            continue
+
         for c in img['tokens']:
             # Update word frequency
             word_freq.update(c)
@@ -48,8 +60,6 @@ def create_input_files(dataset, karpathy_json_path, image_folder, captions_per_i
 
         if len(captions) == 0:
             continue
-
-        path = os.path.join(image_folder, img['file_name'])
 
         if img['split'] == 'train':
             train_image_paths.append(path)
