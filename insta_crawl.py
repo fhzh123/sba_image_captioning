@@ -105,7 +105,7 @@ def download_allposts():
             name_list.append('content1'+'.jpg')
             file_data["name"] = name_list
         all_data['content1'] = file_data
-        c = 2
+    c = 2
       
     while(True): 
         next_el = next_post() 
